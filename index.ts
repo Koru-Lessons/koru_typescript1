@@ -1,3 +1,8 @@
+// Instalar Typescript
+// npm install typescript --save-dev // instala dependências
+// npx tsc –init // cria arquivo de configurações
+// npx tsc // compila código para JS
+
 // 1. Definir o Tipo de Tarefa:
 // Cria um type alias chamado Task para representar uma tarefa.
 
