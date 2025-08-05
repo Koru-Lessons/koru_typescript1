@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Tarefas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .input-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        button.complete {
+            background-color: #28a745;
+        }
+        
+        button.complete:hover {
+            background-color: #1e7e34;
+        }
+        
+        button.remove {
+            background-color: #dc3545;
+        }
+        
+        button.remove:hover {
+            background-color: #c82333;
+        }
+        
+        .tasks-section {
+            margin-top: 30px;
+        }
+        
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .task-item.completed {
+            border-left-color: #28a745;
+            opacity: 0.7;
+        }
+        
+        .task-info {
+            flex: 1;
+        }
+        
+        .task-id {
+            font-weight: bold;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .task-description {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+        
+        .task-description.completed {
+            text-decoration: line-through;
+        }
+        
+        .task-status {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            color: white;
+        }
+        
+        .task-status.pending {
+            background-color: #ffc107;
+        }
+        
+        .task-status.completed {
+            background-color: #28a745;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .no-tasks {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin: 20px 0;
+        }
+        
+        .error {
+            color: #dc3545;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8d7da;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gerenciador Simples de Tarefas</h1>
+        
+        <div class="input-section">
+            <input type="text" id="taskInput" placeholder="Digite a descrição da tarefa..." />
+            <button onclick="addTaskFromInput()">Adicionar Tarefa</button>
+        </div>
+        
+        <div id="errorMessage" class="error" style="display: none;"></div>
+        
+        <div class="tasks-section">
+            <h2>Lista de Tarefas</h2>
+            <div id="tasksList"></div>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>

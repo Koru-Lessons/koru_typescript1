@@ -15,7 +15,7 @@ let tasks: Task[] = [];
 function addTask(description: string): void {
     // Validação básica: Garante que a descrição não está vazia
     if (description.trim() === "") {
-        console.log("Erro: A descrição da tarefa não pode ser vazia.");
+        showError("Erro: A descrição da tarefa não pode ser vazia.");
         return; // Sai da função se a descrição estiver vazia
     }
 
@@ -32,73 +32,115 @@ function addTask(description: string): void {
     // Adiciona a nova tarefa ao array tasks
     tasks.push(newTask);
 
-    console.log(`Tarefa adicionada: "${newTask.description}" (ID: ${newTask.id})`);
+    hideError();
+    renderTasks();
 }
 
-// 4. Função para Listar Tarefas:
-// Cria uma função chamada listTasks que lista todas as tarefas.
-function listTasks(): void {
-    console.log("\n--- Lista de Tarefas ---");
+// 4. Função para Listar Tarefas (adaptada para web):
+// Atualiza a interface web com as tarefas
+function renderTasks(): void {
+    const tasksList = document.getElementById('tasksList');
+    if (!tasksList) return;
 
     // Verifica se o array tasks está vazio
     if (tasks.length === 0) {
-        console.log("Nenhuma tarefa adicionada ainda.");
-        console.log("------------------------");
-        return; // Sai da função
+        tasksList.innerHTML = '<div class="no-tasks">Nenhuma tarefa adicionada ainda.</div>';
+        return;
     }
 
-    // Itera sobre o array tasks e imprime cada tarefa
-    tasks.forEach((task: Task) => {
-        console.log(`ID: ${task.id} - ${task.description} (${task.status})`);
-    });
+    // Gera o HTML para cada tarefa
+    const tasksHTML = tasks.map((task: Task) => `
+        <div class="task-item ${task.status}">
+            <div class="task-info">
+                <div class="task-id">ID: ${task.id}</div>
+                <div class="task-description ${task.status}">${task.description}</div>
+                <span class="task-status ${task.status}">${task.status === 'pending' ? 'Pendente' : 'Concluída'}</span>
+            </div>
+            <div class="task-actions">
+                ${task.status === 'pending' ? 
+                    `<button class="complete" onclick="markTaskCompleted(${task.id})">Concluir</button>` : 
+                    ''
+                }
+                <button class="remove" onclick="removeTask(${task.id})">Remover</button>
+            </div>
+        </div>
+    `).join('');
 
-    console.log("------------------------");
+    tasksList.innerHTML = tasksHTML;
 }
 
-// 5. Execução Simples:
-// Testando o programa chamando as funções
-console.log("--- Gerenciador Simples de Tarefas (CLI) ---");
+// 5. Funções Auxiliares para Web:
+// Função para mostrar mensagens de erro
+function showError(message: string): void {
+    const errorElement = document.getElementById('errorMessage');
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+}
 
-addTask("Comprar mantimentos");
-addTask("Aprender fundamentos de TypeScript");
-addTask("Correr");
-addTask(""); // Testando a validação de descrição vazia
+// Função para esconder mensagens de erro
+function hideError(): void {
+    const errorElement = document.getElementById('errorMessage');
+    if (errorElement) {
+        errorElement.style.display = 'none';
+    }
+}
 
-listTasks();
+// Função para adicionar tarefa a partir do input
+function addTaskFromInput(): void {
+    const taskInput = document.getElementById('taskInput') as HTMLInputElement;
+    if (taskInput) {
+        addTask(taskInput.value);
+        taskInput.value = ''; // Limpa o input após adicionar
+    }
+}
 
-// --- Extensões Opcionais (conforme mencionado no desafio) ---
+// 6. Funções Opcionais (ativadas para web):
+// Função para marcar uma tarefa como concluída
+function markTaskCompleted(id: number): void {
+    const taskToComplete = tasks.find(task => task.id === id);
 
-// // Opcional: Função para marcar uma tarefa como concluída
-// function markTaskCompleted(id: number): void {
-//     const taskToComplete = tasks.find(task => task.id === id);
-//
-//     if (taskToComplete) {
-//         if (taskToComplete.status === "completed") {
-//             console.log(`Tarefa ID ${id} já está concluída.`);
-//         } else {
-//             taskToComplete.status = "completed";
-//             console.log(`Tarefa ID ${id} marcada como concluída.`);
-//         }
-//     } else {
-//         console.log(`Tarefa com ID ${id} não encontrada.`);
-//     }
-// }
+    if (taskToComplete) {
+        if (taskToComplete.status === "completed") {
+            showError(`Tarefa ID ${id} já está concluída.`);
+        } else {
+            taskToComplete.status = "completed";
+            hideError();
+            renderTasks();
+        }
+    } else {
+        showError(`Tarefa com ID ${id} não encontrada.`);
+    }
+}
 
-// // Opcional: Função para remover uma tarefa
-// function removeTask(id: number): void {
-//     const initialLength = tasks.length;
-//     tasks = tasks.filter(task => task.id !== id);
-//
-//     if (tasks.length < initialLength) {
-//         console.log(`Tarefa com ID ${id} removida.`);
-//     } else {
-//         console.log(`Tarefa com ID ${id} não encontrada para remoção.`);
-//     }
-// }
+// Função para remover uma tarefa
+function removeTask(id: number): void {
+    const initialLength = tasks.length;
+    tasks = tasks.filter(task => task.id !== id);
 
-// // Testando funções opcionais
-// markTaskCompleted(2);
-// removeTask(1);
-// listTasks(); // Lista novamente para ver as mudanças
+    if (tasks.length < initialLength) {
+        hideError();
+        renderTasks();
+    } else {
+        showError(`Tarefa com ID ${id} não encontrada para remoção.`);
+    }
+}
 
-console.log("\n--- Fim do Programa ---");
+// 7. Inicialização:
+// Adiciona evento para pressionar Enter no input
+document.addEventListener('DOMContentLoaded', function() {
+    const taskInput = document.getElementById('taskInput') as HTMLInputElement;
+    if (taskInput) {
+        taskInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTaskFromInput();
+            }
+        });
+    }
+    
+    // Adiciona algumas tarefas de exemplo para demonstração
+    addTask("Comprar mantimentos");
+    addTask("Aprender fundamentos de TypeScript");
+    addTask("Correr");
+});
