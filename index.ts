@@ -1,23 +1,52 @@
-// Instalar Typescript
-// npm install typescript --save-dev // instala dependências
-// npx tsc –init // cria arquivo de configurações
-// npx tsc // compila código para JS
+type Task = {
+  id: `${string}-${string}-${string}-${string}-${string}`;
+  description: string;
+  status: "completed" | "pending";
+}
 
-// 1. Definir o Tipo de Tarefa:
-// Cria um type alias chamado Task para representar uma tarefa.
-
-// 2. Lista de Tarefas:
-// Cria uma variável global chamada tasks que será um array de objetos do tipo Task.
+let tasks: Task[] = [];
 
 // 3. Função para Adicionar Tarefa:
 // Cria uma função chamada addTask que recebe a descrição como parâmetro.
+function addTask(description: string): void {
+  if (description.trim() === "") {
+    console.error("A descrição não pode ser vazia");
+    return;
+  }
 
+    const newId = crypto.randomUUID();
+
+  const newTask: Task = {
+    id: newId,
+    description: description.trim(),
+    status: "pending"
+  };
+
+  tasks.push(newTask);
+  console.log(`Tarefa adicionada: "${newTask.description}" (ID: ${newTask.id})`)
+}
 
 // 4. Função para Listar Tarefas:
 // Cria uma função chamada listTasks que lista todas as tarefas.
+function listTasks(): void {
+  console.log("--- Lista de tarefas ---");
+  if (tasks.length === 0) {
+    console.error("Nenhuma tarefa ainda adicionada");
+    return;
+  }
+
+  tasks.forEach((task: Task) => {
+    console.log(`ID: ${task.id} - ${task.description}: ${task.status}`)
+  })
+} 
 
 // 5. Execução Simples:
 // Testando o programa chamando as funções
+addTask("Aprender TypeScript");
+addTask("Lavar a louça");
+addTask("Beber água");
+addTask("");
+listTasks();
 
 // --- Extensões Opcionais (conforme mencionado no desafio) ---
 
